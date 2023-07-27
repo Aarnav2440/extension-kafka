@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static org.axonframework.lifecycle.Phase.INBOUND_EVENT_CONNECTORS;
+
 /**
  * A {@link ModuleConfiguration} to configure Kafka as a message source for {@link
  * org.axonframework.eventhandling.EventProcessor} instances. This ModuleConfiguration should be registered towards the
@@ -36,23 +38,23 @@ import java.util.function.Function;
  */
 public class KafkaMessageSourceConfigurer implements ModuleConfiguration {
 
-    private Configuration configuration;
-    private final List<Component<SubscribableKafkaMessageSource<?, ?>>> subscribableKafkaMessageSources = new ArrayList<>();
+    private Configuration config;
+    private final List<Component<SubscribableKafkaMessageSource<?, ?>>> sources = new ArrayList<>();
 
     @Override
     public void initialize(Configuration config) {
-        this.configuration = config;
+        this.config = config;
 
-        if (!subscribableKafkaMessageSources.isEmpty()) {
-            this.configuration.onStart(
-                    Phase.INBOUND_EVENT_CONNECTORS,
-                    () -> subscribableKafkaMessageSources.stream().map(Component::get)
-                                                         .forEach(SubscribableKafkaMessageSource::start)
+        if (!sources.isEmpty()) {
+            this.config.onStart(
+                    INBOUND_EVENT_CONNECTORS,
+                    () -> sources.stream().map(Component::get)
+                            .forEach(SubscribableKafkaMessageSource::start)
             );
-            this.configuration.onShutdown(
-                    Phase.INBOUND_EVENT_CONNECTORS,
-                    () -> subscribableKafkaMessageSources.stream().map(Component::get)
-                                                         .forEach(SubscribableKafkaMessageSource::close)
+            this.config.onShutdown(
+                    INBOUND_EVENT_CONNECTORS,
+                    () -> sources.stream().map(Component::get)
+                            .forEach(SubscribableKafkaMessageSource::close)
             );
         }
     }
@@ -66,8 +68,8 @@ public class KafkaMessageSourceConfigurer implements ModuleConfiguration {
     public void configureSubscribableSource(
             Function<Configuration, SubscribableKafkaMessageSource<?, ?>> subscribableKafkaMessageSource
     ) {
-        subscribableKafkaMessageSources.add(new Component<>(
-                () -> configuration, "subscribableKafkaMessageSource", subscribableKafkaMessageSource
+        sources.add(new Component<>(
+                () -> config, "subscribableKafkaMessageSource", subscribableKafkaMessageSource
         ));
     }
 }
