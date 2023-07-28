@@ -59,15 +59,16 @@ class KafkaPropertiesIntegrationTest {
     }
 
     private static void assertPropertyMap(Map<String, String> resultProperties) {
-        assertTrue(resultProperties.containsKey(PROPERTY_KEY_ONE));
-        assertEquals(PROPERTY_VALUE_ONE, resultProperties.get(PROPERTY_KEY_ONE));
-        assertTrue(resultProperties.containsKey(PROPERTY_KEY_TWO));
-        assertEquals(PROPERTY_VALUE_TWO, resultProperties.get(PROPERTY_KEY_TWO));
-        assertTrue(resultProperties.containsKey(PROPERTY_KEY_THREE));
-        assertEquals(PROPERTY_VALUE_THREE, resultProperties.get(PROPERTY_KEY_THREE));
-        assertTrue(resultProperties.containsKey(PROPERTY_KEY_FOUR));
-        assertEquals(PROPERTY_VALUE_FOUR, resultProperties.get(PROPERTY_KEY_FOUR));
-        assertTrue(resultProperties.containsKey(PROPERTY_KEY_FIVE));
-        assertEquals(PROPERTY_VALUE_FIVE, resultProperties.get(PROPERTY_KEY_FIVE));
+        assertNotNull(resultProperties);
+        assertProperty(resultProperties, PROPERTY_KEY_ONE, PROPERTY_VALUE_ONE);
+        assertProperty(resultProperties, PROPERTY_KEY_TWO, PROPERTY_VALUE_TWO);
+        assertProperty(resultProperties, PROPERTY_KEY_THREE, PROPERTY_VALUE_THREE);
+        assertProperty(resultProperties, PROPERTY_KEY_FOUR, PROPERTY_VALUE_FOUR);
+        assertProperty(resultProperties, PROPERTY_KEY_FIVE, PROPERTY_VALUE_FIVE);
+    }
+
+    private static void assertProperty(Map<String, String> properties, String key, String expectedValue) {
+        assertTrue(properties.containsKey(key));
+        assertEquals(expectedValue, properties.get(key));
     }
 }
