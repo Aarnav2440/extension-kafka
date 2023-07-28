@@ -149,15 +149,20 @@ public class ExtensionUtils {
         if (isNonMetadataExtension(extensionName)) {
             throw new InvalidMetaDataException(
                     String.format("Metadata property '%s' is already reserved to be used for Axon",
-                                  extensionName)
+                            extensionName)
             );
         }
         if (!isValidExtensionName(extensionName)) {
             throw new InvalidMetaDataException(
                     String.format("Metadata property '%s' is not a valid extension name",
-                                  extensionName)
+                            extensionName)
             );
         }
+
+        addExtension(builder, extensionName, value);
+    }
+
+    private static void addExtension(CloudEventBuilder builder, String extensionName, Object value) {
         if (value instanceof String) {
             builder.withExtension(extensionName, (String) value);
         } else if (value instanceof Number) {
@@ -173,12 +178,13 @@ public class ExtensionUtils {
         } else {
             throw new InvalidMetaDataException(
                     String.format("Metadata property '%s' is of class '%s' and thus can't be added.\n"
-                                          + "Supported classes are String, Number, Boolean, URI, OffsetDataTime and byte[]",
-                                  extensionName,
-                                  value.getClass())
+                                    + "Supported classes are String, Number, Boolean, URI, OffsetDataTime, and byte[]",
+                            extensionName,
+                            value.getClass())
             );
         }
     }
+
 
     /**
      * Will return the {@link Object} as {@link String} if it's a {@link String}, otherwise {@code null} is returned.
